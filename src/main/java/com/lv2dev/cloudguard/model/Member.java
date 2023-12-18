@@ -31,23 +31,11 @@ public class Member {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "tel")
-    private String tel;
-
-    @Column(name = "birth_day")
-    private LocalDate birthDay;
-
     @Column(name = "join_day")
     private LocalDateTime joinDay;
-
-    @Column(name = "gender")
-    private int gender;
 
     @Column(name = "profile")
     private String profile; // 프로필 이미지가 들어있는 경로

@@ -1,9 +1,12 @@
 package com.lv2dev.cloudguard.controller;
 
+import com.lv2dev.cloudguard.dto.MemberDTO;
 import com.lv2dev.cloudguard.dto.auth.LoginDTO;
 import com.lv2dev.cloudguard.model.Member;
 import com.lv2dev.cloudguard.persistence.MemberRepository;
 import com.lv2dev.cloudguard.response.auth.TokenResponse;
+import com.lv2dev.cloudguard.service.MemberService;
+import com.lv2dev.cloudguard.service.S3Service;
 import com.lv2dev.cloudguard.service.TokenService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.Collections;
 
 @Api(tags = "토큰 발급과 재발급 관련 API를 담당하는 컨트롤러")
@@ -27,6 +32,9 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberRepository memberRepository;
+
+    // member service
+    private final MemberService memberService;
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestParam String refreshToken) {
@@ -55,11 +63,19 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signUp(@RequestBody Member member) {
-        member.setPassword(passwordEncoder.encode(member.getPassword()));
-        memberRepository.save(member);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<?> signUp(@RequestBody MemberDTO memberDTO) {
+        try {
+            memberService.signUp(memberDTO);
+            return ResponseEntity.ok().build();
+        } catch (ResponseStatusException e) {
+            // 커스텀 예외 메시지 반환
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+        } catch (Exception e) {
+            // 기타 예외 처리
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
