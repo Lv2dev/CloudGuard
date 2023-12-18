@@ -23,25 +23,12 @@ public class MemberDTO {
 
     private String password;
 
-    private String name;
-
     private String nickname;
 
     private String email;
 
-    private String tel;
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate birthDay;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime joinDay;
-
-    private int gender;
-
-
-    private String address;
 
     private String profile; // 프로필 이미지가 들어있는 경로
 
