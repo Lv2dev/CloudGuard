@@ -1,12 +1,11 @@
 package com.lv2dev.cloudguard.persistence;
 
 import com.lv2dev.cloudguard.model.Member;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
-
-public interface MemberRepository extends ElasticsearchRepository<Member, Integer> {
+@Repository
+public interface MemberRepository extends JpaRepository<Member, Integer> {
     /**
      * 이메일로 찾기
      * */

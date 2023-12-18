@@ -6,7 +6,6 @@ import com.lv2dev.cloudguard.model.Member;
 import com.lv2dev.cloudguard.persistence.MemberRepository;
 import com.lv2dev.cloudguard.response.auth.TokenResponse;
 import com.lv2dev.cloudguard.service.MemberService;
-import com.lv2dev.cloudguard.service.S3Service;
 import com.lv2dev.cloudguard.service.TokenService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +25,7 @@ import java.util.Collections;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/token")
+@Controller
 public class AuthController {
 
     private final TokenService tokenService;
