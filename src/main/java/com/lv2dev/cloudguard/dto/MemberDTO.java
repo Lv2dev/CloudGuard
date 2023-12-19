@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,7 +31,10 @@ public class MemberDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime joinDay;
 
-    private String profile; // 프로필 이미지가 들어있는 경로
+    private MultipartFile profile; // 프로필 이미지가 들어있는 경로
+
+    private String profileUrl; // 프로필 이미지가 들어있는 경로
+
 
     private int role; // 0:학생, 1:선생, 2:관리자
 

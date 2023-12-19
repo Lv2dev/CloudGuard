@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 public class S3Service {
@@ -28,25 +29,20 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public String uploadFile(String jsonFileData, String path, String keyName) {
-        // JSON 문자열에서 파일 데이터 추출
-        JSONObject jsonObject = new JSONObject(jsonFileData);
-        String fileContent = jsonObject.getString("fileContent"); // 파일 내용을 나타내는 키
-        String fileExtension = jsonObject.optString("fileExtension", ""); // 파일 확장자 (옵셔널)
+    public String uploadFile(MultipartFile file, String path, String keyName) throws IOException {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File is empty");
+        }
 
-        byte[] data = fileContent.getBytes(); // 파일 내용을 바이트 배열로 변환
+        String fileExtension = Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf('.') + 1);
 
-        // 바이트 배열을 이용하여 ByteArrayInputStream 생성
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(data);
-
-        // S3에 파일 업로드
-        String fullKeyName = path + "/" + keyName + (fileExtension.isEmpty() ? "" : "." + fileExtension);
+        String fullKeyName = path + "/" + keyName + "." + fileExtension;
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(data.length);
-        PutObjectRequest request = new PutObjectRequest(bucketName, fullKeyName, byteArrayInputStream, metadata);
-        s3Client.putObject(request);
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+        s3Client.putObject(new PutObjectRequest(bucketName, fullKeyName, file.getInputStream(), metadata));
 
-        // 업로드된 파일의 URL 반환
         return s3Client.getUrl(bucketName, fullKeyName).toString();
     }
 }
