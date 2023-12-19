@@ -37,6 +37,11 @@ dependencies {
 	implementation group: 'org.javassist', name: 'javassist', version: '3.30.0-GA'
 
 
+	// https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on
+	implementation group: 'org.bouncycastle', name: 'bcprov-jdk18on', version: '1.77'
+
+
+
 
 
 

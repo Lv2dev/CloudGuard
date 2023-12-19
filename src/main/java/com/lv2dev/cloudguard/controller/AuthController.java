@@ -16,10 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -142,10 +144,10 @@ public class AuthController {
      * 로그아웃 컨트롤러 ... db에 저장된 refresh token 삭제
      * */
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(@RequestParam String refreshToken) {
+    public ResponseEntity<?> logout(@ApiIgnore Authentication authentication) {
         try {
-            String email = tokenService.getEmailFromToken(refreshToken);
-            Member member = memberRepository.findByEmail(email);
+            Long memberId = Long.parseLong(authentication.getPrincipal().toString());
+            Member member = memberRepository.findById(memberId);
             if (member != null) {
                 member.setRefreshToken(null);
                 memberRepository.save(member);
@@ -153,6 +155,7 @@ public class AuthController {
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }

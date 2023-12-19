@@ -34,7 +34,7 @@ public class TokenService {
 
     public String createAccessToken(Member member) {
         return Jwts.builder()
-                .setSubject(member.getEmail())
+                .setSubject(member.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 시간
                 .signWith(SignatureAlgorithm.HS512, secretKey)
@@ -43,7 +43,7 @@ public class TokenService {
 
     public String createRefreshToken(Member member) {
         return Jwts.builder()
-                .setSubject(member.getEmail())
+                .setSubject(member.getId().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 25200000)) // 일주일
                 .signWith(SignatureAlgorithm.HS512, secretKey)
